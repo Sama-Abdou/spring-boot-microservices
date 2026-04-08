@@ -1,4 +1,4 @@
-package com.example.trending.models;
+package main.java.com.example.trending.models;
 
 import javax.persistence.Id;
 import javax.persistence.Column;
@@ -20,4 +20,4 @@ public class Rating {
 
     public String getMovieId() { return movieId; }
     public Integer getRating() { return rating; }
-}
+} 
