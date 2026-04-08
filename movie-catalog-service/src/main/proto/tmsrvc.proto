@@ -1,0 +1,21 @@
+syntax = "proto3";
+package com.example.grpc.trending;
+option java_package = "com.example.grpc.tmsrvc";
+option java_multiple_files = true;
+
+service TrendingService {
+    rpc GetTopRatedMovies (TrendingMoviesRequest) returns (TrendingMoviesResponse);
+}
+
+message TrendingMoviesRequest {
+    int32 top_n = 1;
+}
+
+message TopRatedMovie {
+    string movie_id = 1;
+    string movie_name = 2;
+    int32 rating = 3;
+}
+message TrendingMoviesResponse {
+    repeated TopRatedMovie movies = 1;
+}
