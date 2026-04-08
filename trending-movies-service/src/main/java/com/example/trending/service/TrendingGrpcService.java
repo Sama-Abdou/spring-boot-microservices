@@ -23,7 +23,7 @@ public class TrendingGrpcService extends TrendingServiceGrpc.TrendingServiceImpl
 
         try {
             UserRating userRating = restTemplate.getForObject(
-                    "http://localhost:8083/ratingsdata/users/1",
+                    "http://localhost:8083/ratings/1",
                     UserRating.class);
 
             TrendingMoviesResponse.Builder responseBuilder = TrendingMoviesResponse.newBuilder();
