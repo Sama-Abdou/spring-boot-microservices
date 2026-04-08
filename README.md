@@ -197,7 +197,7 @@ mvn spring-boot:run
 http://localhost:8083/ratings/user1
 ```
 
-Expected response:
+Response:
 ```json
 {
     "userId": "user1",
@@ -208,5 +208,7 @@ Expected response:
     ]
 }
 ```
-
+![MySQL Schema](images/ratings_schema.png)
 ---
+
+
