@@ -212,3 +212,154 @@ Response:
 ---
 
 
+---
+
+## B. Cache the MovieDB query results in MongoDB
+
+### Step 1 - Set Up MongoDB Cache
+
+#### 1.1 Verify MongoDB Installation
+Ensure MongoDB (v8.x recommended) is running locally on the default port 27017.
+
+```bash
+mongod --version
+sudo systemctl status mongod
+```
+
+#### 1.2 Design the Cache Document Structure
+MongoDB is a document-oriented NoSQL database. Our movies collection stores JSON documents mapping to our Java objects.
+
+```json
+{
+  "_id": "550",
+  "name": "Fight Club",
+  "description": "A ticking-time-bomb insomniac and a slippery soap salesman...",
+  "_class": "com.example.movieinfoservice.models.Movie"
+}
+```
+
+---
+
+### Step 2 - Update pom.xml
+
+Add the Spring Data MongoDB dependency to `movie-info-service/pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+```
+
+---
+
+### Step 3 - Configure application.properties
+
+Open `movie-info-service/src/main/resources/application.properties`:
+
+```properties
+spring.data.mongodb.uri=mongodb://localhost:27017/movie_db
+```
+
+---
+
+### Step 4 - Update Movie.java (MongoDB Document)
+
+`movie-info-service/src/main/java/com/example/movieinfoservice/models/Movie.java`
+
+```java
+package com.example.movieinfoservice.models;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "movies")
+public class Movie {
+
+    @Id
+    private String movieId;
+    private String name;
+    private String description;
+
+    public Movie() {}
+
+    public Movie(String movieId, String name, String description) {
+        this.movieId = movieId;
+        this.name = name;
+        this.description = description;
+    }
+    
+    // Getters and Setters...
+}
+```
+
+---
+
+### Step 5 - Create MovieRepository.java
+
+`movie-info-service/src/main/java/com/example/movieinfoservice/models/MovieRepository.java`
+
+```java
+package com.example.movieinfoservice.models;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MovieRepository extends MongoRepository<Movie, String> {
+}
+```
+
+---
+
+### Step 6 - Implement Cache-Aside Logic in MovieResource.java
+
+Modified the controller to implement the **Cache-Aside Pattern**.
+
+```java
+@Autowired
+private MovieRepository movieRepository;
+
+@RequestMapping("/{movieId}")
+public Movie getMovieInfo(@PathVariable("movieId") String movieId) throws InterruptedException {
+    
+    // 1. Check MongoDB Cache first
+    Optional<Movie> cachedMovie = movieRepository.findById(movieId);
+    
+    if (cachedMovie.isPresent()) {
+        System.out.println("CACHE HIT: Returning movie " + movieId + " from MongoDB");
+        return cachedMovie.get();
+    }
+
+    // 2. Cache Miss: Simulate slow external API delay
+    System.out.println("CACHE MISS: Fetching movie " + movieId + " (2s delay)...");
+    Thread.sleep(2000); 
+
+    final String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey;
+    MovieSummary movieSummary = restTemplate.getForObject(url, MovieSummary.class);
+    
+    Movie movie = new Movie(movieId, movieSummary.getTitle(), movieSummary.getOverview());
+
+    // 3. Save to MongoDB for future requests
+    movieRepository.save(movie);
+
+    return movie;
+}
+```
+
+---
+
+
+### Step 7 - Testing
+
+![alt text](images/caching.png)
+
+---
+
+### Step 8 - Discussion Questions
+
+* **Why suggest caching in this service?**
+  Movie metadata is static. Caching reduces network latency and prevents redundant API calls.
+* **Where else might caching matter?**
+  Ideal for read-heavy data (configs, user profiles). Avoid for write-heavy data (live inventory) to prevent staleness.
+
