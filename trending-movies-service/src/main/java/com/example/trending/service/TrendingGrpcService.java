@@ -1,14 +1,16 @@
 package com.example.trending.service;
 
-import com.example.trending.models.UserRating;
-import com.example.grpc.tmsrvc.TrendingServiceGrpc;
-import com.example.grpc.tmsrvc.TrendingMoviesRequest;
-import com.example.grpc.tmsrvc.TrendingMoviesResponse;
-import com.example.grpc.tmsrvc.TopRatedMovie;
-import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.grpc.tmsrvc.TopRatedMovie;
+import com.example.grpc.tmsrvc.TrendingMoviesRequest;
+import com.example.grpc.tmsrvc.TrendingMoviesResponse;
+import com.example.grpc.tmsrvc.TrendingServiceGrpc;
+import com.example.trending.models.UserRating;
+
+import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.server.service.GrpcService;
 
 @GrpcService
 public class TrendingGrpcService extends TrendingServiceGrpc.TrendingServiceImplBase {

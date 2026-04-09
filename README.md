@@ -419,6 +419,23 @@ e.g. 10 threads × 10 loops = 100 total requests
 ---
  
 ### The Tests
+### 1. Ratings Service
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+HTTP Request	100	4	4	6	7	10	2	12	0.00%	11.05828	2.95	1.39
+TOTAL	100	4	4	6	7	10	2	12	0.00%	11.05828	2.95	1.39
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+HTTP Request	100	4	2	12	1.57	0.00%	11.05828	2.95	1.39	273
+TOTAL	100	4	2	12	1.57	0.00%	11.05828	2.95	1.39	273
+
+
+### 2. Movies Service
+
  
 > Configuration order: **(Number of threads, Ramp-up period, Loop count)**
  
@@ -455,8 +472,52 @@ However, in the cached response, the average is much lower due to all responses 
 ![Cached Aggregate Report](images/cached-aggregate.png)
  
 ---
+
+
+### 3.Trending Service
+
  
 ### Stress Test
+
+
+### 1. Ratings Service
+
+#### Configuration 1: `(1000, 10, 100)`
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+Movies HTTP Request	100000	662	614	1184	1437	2068	1	2350	0.00%	1246.61855	332.31	157.04
+TOTAL	100000	662	614	1184	1437	2068	1	2350	0.00%	1246.61855	332.31	157.04
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+Movies HTTP Request	100000	662	1	2350	399.45	0.00%	1246.61855	332.31	157.04	273
+TOTAL	100000	662	1	2350	399.45	0.00%	1246.61855	332.31	157.04	273
+
+
+#### Configuration 2: `(3000, 10, 100)` Breaking Point
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+Movies HTTP Request	283659	1654	1629	1991	2095	3812	1	8718	0.00%	1644.80047	438.51	207.21
+TOTAL	283659	1654	1629	1991	2095	3812	1	8718	0.00%	1644.80047	438.51	207.21
+
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+Movies HTTP Request	300000	1569	1	8718	773.62	5.45%	1739.55398	681.87	207.21	401.4
+TOTAL	300000	1569	1	8718	773.62	5.45%	1739.55398	681.87	207.21	401.4
+
+Note:
+Error was found, with small percentage, but it showed the start of the breaking point
+
+
+### 2. Movies Service
+
  
 To evaluate the stress/breaking point of the system, multiple configuration variations were used.
  
@@ -563,6 +624,62 @@ This means connection has failed due to inability of OS to establish more TCP co
   shifted from response latency to connection handling capacity
 
 
+
+
+### 3.Trending Service
+
+
+#### Configuration 1: `(1000, 10, 100)`
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+Movies HTTP Request	99997	1515	1383	2020	2296	8219	5	10008	0.00%	601.11691	179.63	77.49
+TOTAL	99997	1515	1383	2020	2296	8219	5	10008	0.00%	601.11691	179.63	77.49
+
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+Movies HTTP Request	100000	1515	5	10008	1189.11	0.00%	601.13494	179.64	77.49	306
+TOTAL	100000	1515	5	10008	1189.11	0.00%	601.13494	179.64	77.49	306
+
+
+#### Configuration 2: `(2000, 10, 100)` Breaking Point
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+Movies HTTP Request	199941	3103	3127	4086	4373	5019	5	6139	0.00%	603.20214	180.25	77.76
+TOTAL	199941	3103	3127	4086	4373	5019	5	6139	0.00%	603.20214	180.25	77.76
+
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+Movies HTTP Request	200000	3102	5	6139	874.16	0.03%	603.38014	180.3	77.78	306
+TOTAL	200000	3102	5	6139	874.16	0.03%	603.38014	180.3	77.78	306
+
+
+> eventhough , error is very low, it was due to a TCP connection failure, which means the bottleneck problem started, hence The Breaking Point
+
+#### Configuration 3: `(3000, 10, 100)`
+
+Aggregate Report
+
+Label	# Samples	Average	Median	90% Line	95% Line	99% Line	Min	Max	Error %	Throughput	Received KB/sec	Sent KB/sec
+Movies HTTP Request	162786	5264	4481	8690	11136	19824	5	54212	0.00%	421.25175	125.88	54.3
+TOTAL	162786	5264	4481	8690	11136	19824	5	54212	0.00%	421.25175	125.88	54.3
+
+Summary Report
+
+Label	# Samples	Average	Min	Max	Std. Dev.	Error %	Throughput	Received KB/sec	Sent KB/sec	Avg. Bytes
+Movies HTTP Request	300000	3317	1	54212	3538.25	45.74%	776.3292	965.84	55.86	1274
+TOTAL	300000	3317	1	54212	3538.25	45.74%	776.3292	965.84	55.86	1274
+
+
+## Conclusion , Trending Service Breaking point is in the middle between these 2 extreme cases
+
 ### note
 
 to generate a full visual report command used was 
@@ -572,10 +689,17 @@ jmeter -n -t "Stress Test\Stress-Test2.jmx" -l StressResults2.jtl -e -o report_f
 ```
 
 where
-`
+
 - -n          → run without GUI
 - -t          → your test plan file
 - -l          → save raw results to this file
 - -e          → generate report
 - -o          → output folder for HTML report
-`
+
+
+## Performance Charts
+![alt text](./images/chart1_latency_normal_load.png) 
+![alt text](./images/chart2_throughput.png) 
+![alt text](./images/chart3_error_rate.png)
+![alt text](./images/chart4_percentile_spread.png)
+![alt text](./images/chart5_cache_comparison.png)
