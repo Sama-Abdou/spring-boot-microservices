@@ -1,16 +1,17 @@
 package com.example.movieinfoservice.resources;
 
-import com.example.movieinfoservice.models.Movie;
-import com.example.movieinfoservice.models.MovieSummary;
-import com.example.movieinfoservice.models.MovieRepository; //repo
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Value; //repo
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
+import com.example.movieinfoservice.models.Movie;
+import com.example.movieinfoservice.models.MovieRepository;
+import com.example.movieinfoservice.models.MovieSummary;
 
 @RestController
 @RequestMapping("/movies")
