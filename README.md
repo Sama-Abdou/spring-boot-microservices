@@ -564,13 +564,18 @@ This means connection has failed due to inability of OS to establish more TCP co
 
 
 ### note
+
 to generate a full visual report command used was 
-> jmeter -n -t "Stress Test\Stress-Test2.jmx" -l StressResults2.jtl -e -o report_folder\StressTest2
+
+```bash
+jmeter -n -t "Stress Test\Stress-Test2.jmx" -l StressResults2.jtl -e -o report_folder\StressTest2
+```
+
 where
 `
--n          → run without GUI
--t          → your test plan file
--l          → save raw results to this file
--e          → generate report
--o          → output folder for HTML report
+- -n          → run without GUI
+- -t          → your test plan file
+- -l          → save raw results to this file
+- -e          → generate report
+- -o          → output folder for HTML report
 `
